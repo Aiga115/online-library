@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Divider, IconButton, Stack } from "@mui/material";
 import { Helmet } from "react-helmet-async";
@@ -17,7 +18,11 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
 const Main = () => {
+  const navigate = useNavigate();
   const [isFav, setIsFav] = useState(false);
+  const handleImgClick = () => {
+    navigate('/book-info');
+  }
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "50px" }}>
       <Helmet>
@@ -67,6 +72,7 @@ const Main = () => {
                 <img
                   src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSFlx4x-DSoFn2AEBcxh-pURx2U7ECB4el5OztaFW3igFUXXDUK"
                   alt="book_img"
+                  onClick={handleImgClick}
                 />
               </div>
               {isFav ? (

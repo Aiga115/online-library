@@ -4,14 +4,14 @@ import Layout from './layout';
 
 import Main from './pages/Main';
 import WishList from './pages/WishList';
-import AddBook from './pages/AddBook';
+import BookInfo from './pages/BookInfo';
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
           <Route index element={<Main/>} />
           <Route path="wish-list" element={<WishList />} />
-          <Route path="add-book" element={<AddBook/>} />
+          <Route path="book-info" element={<BookInfo/>} />
         </Route>
     </Routes>
   );
