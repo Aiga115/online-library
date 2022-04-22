@@ -5,15 +5,12 @@ import Header from "../components/header";
 
 const Main = styled(Box)(
   () => `
-          margin-top: 88px;
-          flex: 1 1 auto;
-          overflow: auto;
-          margin:100px;
+          
   `
 );
 const MainContent = styled(Box)(
   () => `
-          margin-top: 80px;
+          margin: 120px 40px 0px 40px;
   `
 );
 
