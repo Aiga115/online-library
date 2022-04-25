@@ -16,13 +16,18 @@ import MenuItem from "@mui/material/MenuItem";
 import ListSubheader from "@mui/material/ListSubheader";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import BookAddModal from "../../components/bookAddModal";
 
 const Main = () => {
   const navigate = useNavigate();
   const [isFav, setIsFav] = useState(false);
+  const [open,setOpen] = useState(false);
   const handleImgClick = () => {
     navigate('/book-info');
   }
+  React.useEffect(()=>{
+    console.log("open",open);
+  },[open])
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "50px" }}>
       <Helmet>
@@ -37,10 +42,11 @@ const Main = () => {
             All Books
           </Button>
         </Box>
-        <Button variant="contained" startIcon={<AddBoxIcon />}>
+        <Button variant="contained" startIcon={<AddBoxIcon />} onClick={()=>setOpen(true)}>
           Add Book
         </Button>
       </Box>
+      <BookAddModal open={open} onClick={setOpen}/>
       <Box sx={{ display: "flex", gap: "20px" }}>
         <FormControl sx={{ minWidth: 250 }}>
           <InputLabel htmlFor="author-list">Author</InputLabel>
