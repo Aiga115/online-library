@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Box, Button, Divider, IconButton, Stack } from "@mui/material";
+import { Box, Button, IconButton, Stack } from "@mui/material";
 import { Helmet } from "react-helmet-async";
 import "./index.css";
+
+import {
+  updateToggle,
+  sortData,
+  filterDataByCategory,
+  filterDataByAuthor,
+  filterAll,
+} from "../../redux/features/books.feature";
 
 import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
@@ -20,14 +29,39 @@ import BookAddModal from "../../components/bookAddModal";
 
 const Main = () => {
   const navigate = useNavigate();
-  const [isFav, setIsFav] = useState(false);
-  const [open,setOpen] = useState(false);
-  const handleImgClick = () => {
-    navigate('/book-info');
-  }
-  React.useEffect(()=>{
-    console.log("open",open);
-  },[open])
+  const [open, setOpen] = useState(false);
+  let dispatch = useDispatch();
+  let [category, setCategory] = useState("");
+  let bookState = useSelector((store) => {
+    return store["books"];
+  });
+  let { books } = bookState;
+  let { categories } = bookState;
+  let { authors } = bookState;
+
+  let handleImgClick = () => {
+    navigate("/book-info");
+  };
+  let handleFav = (id) => {
+    dispatch(updateToggle(id));
+  };
+  let handleSort = () => {
+    console.log("Sort activated");
+    dispatch(sortData());
+  };
+  let handleCategoryChange = (e) => {
+    setCategory(e.target.value);
+  };
+  let handleFilterByCategory = (value) => {
+    dispatch(filterDataByCategory(value));
+  };
+  let handleFilterByAuthor = (value) => {
+    dispatch(filterDataByAuthor(value));
+  };
+  let handleFilterAll = () => {
+    dispatch(filterAll());
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "50px" }}>
       <Helmet>
@@ -35,64 +69,96 @@ const Main = () => {
       </Helmet>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", gap: "20px" }}>
-          <IconButton>
+          <IconButton onClick={handleSort}>
             <SortByAlphaIcon fontSize="large" />
           </IconButton>
-          <Button variant="contained" startIcon={<CollectionsBookmarkIcon />}>
+          <Button
+            variant="contained"
+            startIcon={<CollectionsBookmarkIcon />}
+            onClick={() => handleFilterAll()}
+          >
             All Books
           </Button>
         </Box>
-        <Button variant="contained" startIcon={<AddBoxIcon />} onClick={()=>setOpen(true)}>
+        <Button
+          variant="contained"
+          startIcon={<AddBoxIcon />}
+          onClick={() => setOpen(true)}
+        >
           Add Book
         </Button>
       </Box>
-      <BookAddModal open={open} onClick={setOpen}/>
+      <BookAddModal open={open} onClick={setOpen} />
       <Box sx={{ display: "flex", gap: "20px" }}>
         <FormControl sx={{ minWidth: 250 }}>
-          <InputLabel htmlFor="author-list">Author</InputLabel>
-          <Select native defaultValue="" id="author-list" label="Author">
-            <option aria-label="None" value="" />
-            <option value={1}>Option 1</option>
-            <option value={2}>Option 2</option>
+          <InputLabel htmlFor="author-list">Authors</InputLabel>
+          <Select defaultValue="" id="author-list" label="Author">
+            {authors.map((item, index) => (
+              <MenuItem
+                key={index}
+                value={item.name}
+                onClick={() => handleFilterByAuthor(item.name)}
+              >
+                {item.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <FormControl sx={{ minWidth: 250 }}>
           <InputLabel htmlFor="categories-list">Categories</InputLabel>
-          <Select defaultValue="" id="categories-list" label="Categories">
-            <ListSubheader>Fictional</ListSubheader>
-            <MenuItem value={1}>Option 1</MenuItem>
-            <MenuItem value={2}>Option 2</MenuItem>
-            <ListSubheader>NonFictional</ListSubheader>
-            <MenuItem value={3}>Option 3</MenuItem>
-            <MenuItem value={4}>Option 4</MenuItem>
+          <Select
+            defaultValue=""
+            id="categories-list"
+            label="Categories"
+            value={category}
+            onChange={handleCategoryChange}
+          >
+            {categories.map((item, index) => (
+              <MenuItem
+                key={index}
+                value={item.name}
+                onClick={() => handleFilterByCategory(item.name)}
+              >
+                {item.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>
       <section>
-        <div>
-          <h1 className="category_header">Business Education</h1>
-          <Divider />
-          <Stack direction="row" spacing={8} style={{ margin: "20px auto" }}>
-            <div>
-              <div className="img_div">
-                <img
-                  src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSFlx4x-DSoFn2AEBcxh-pURx2U7ECB4el5OztaFW3igFUXXDUK"
-                  alt="book_img"
-                  onClick={handleImgClick}
-                />
+        <Stack direction="row" spacing={8} style={{ margin: "20px auto" }}>
+          {books.map((item, index) => {
+            return (
+              <div key={index}>
+                <h1 className="category_header">{item.category_name}</h1>
+                <div>
+                  <div className="img_div">
+                    <img
+                      src={`${item.img}`}
+                      alt={item.title}
+                      onClick={handleImgClick}
+                    />
+                  </div>
+                  {item.isFav ? (
+                    <FavoriteIcon
+                      sx={{ color: "red", m: "5px 0 5px 0" }}
+                      onClick={() => handleFav(item.id)}
+                    />
+                  ) : (
+                    <FavoriteBorderIcon
+                      sx={{ color: "red", m: "5px 0 5px 0" }}
+                      onClick={() => handleFav(item.id)}
+                    />
+                  )}
+                  <div>
+                    <p className="book_title">{item.title}</p>
+                    <p className="book_author">{item.author}</p>
+                  </div>
+                </div>
               </div>
-              {isFav ? (
-                <FavoriteIcon sx={{ color: "red", m: "5px 0 5px 0" }} onClick={()=>setIsFav(false)}/>
-              ) : (
-                <FavoriteBorderIcon sx={{ color: "red", m: "5px 0 5px 0" }} onClick={()=>setIsFav(true)}/>
-              )}
-              <div>
-                <p className="book_title">Title</p>
-                <p className="book_author">Author</p>
-              </div>
-            </div>
-          </Stack>
-        </div>
+            );
+          })}
+        </Stack>
       </section>
     </div>
   );
