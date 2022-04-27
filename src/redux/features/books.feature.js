@@ -30,6 +30,7 @@ const initialState = {
   allBooks: JSON.parse(localStorage.getItem("books")) || [],
   categories: JSON.parse(localStorage.getItem("categories")) || [],
   authors: JSON.parse(localStorage.getItem("authors")) || [],
+  favBooks:JSON.parse(localStorage.getItem("favBooks")) || []
 };
 
 console.log("state: ",initialState);
@@ -39,14 +40,17 @@ const bookSlice = createSlice({
   initialState: initialState,
   reducers: {
     updateToggle: function (state, action) {
-      state.books = state.books.map((book) => {
-        if (book.id === action.payload) {
+      state.books = state.books.map((book,index) => {
+        if (index === action.payload) {
           return {
             ...book,
             isFav: !book.isFav,
           };
         } else return book;
       });
+      state.favBooks = state.books.filter((book)=>book.isFav===true);
+      localStorage.setItem("favBooks",JSON.stringify(state.favBooks))
+      localStorage.setItem("books",JSON.stringify(state.books))
     },
     sortData: function (state) {
       state.books = state.books.sort((a, b) =>

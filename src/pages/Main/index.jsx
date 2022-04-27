@@ -13,7 +13,7 @@ import {
   filterDataByCategory,
   filterDataByAuthor,
   filterAll,
-  deleteBook
+  deleteBook,
 } from "../../redux/features/books.feature";
 
 import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
@@ -72,7 +72,7 @@ const Main = () => {
   };
   let handleDelete = (index) => {
     dispatch(deleteBook(index));
-  }
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "50px" }}>
@@ -144,10 +144,10 @@ const Main = () => {
         </FormControl>
       </Box>
       <section>
-        <Stack direction="row" spacing={8} style={{ margin: "20px auto" }}>
+        <div className="book_list">
           {books?.map((item, index) => {
             return (
-              <div key={index}>
+              <div key={index} className="list_item">
                 <h1 className="category_header">{item.category_name}</h1>
                 <div>
                   <div className="img_div">
@@ -165,15 +165,15 @@ const Main = () => {
                     {item.isFav ? (
                       <FavoriteIcon
                         sx={{ color: "red", m: "5px 0 5px 0" }}
-                        onClick={() => handleFav(item.id)}
+                        onClick={() => handleFav(index)}
                       />
                     ) : (
                       <FavoriteBorderIcon
                         sx={{ color: "red", m: "5px 0 5px 0" }}
-                        onClick={() => handleFav(item.id)}
+                        onClick={() => handleFav(index)}
                       />
                     )}
-                    <DeleteIcon onClick={() =>handleDelete(index)}/>
+                    <DeleteIcon onClick={() => handleDelete(index)} />
                   </div>
                   <div>
                     <p className="book_title">{item.title}</p>
@@ -183,7 +183,7 @@ const Main = () => {
               </div>
             );
           })}
-        </Stack>
+        </div>
       </section>
     </div>
   );

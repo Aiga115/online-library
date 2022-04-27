@@ -19,6 +19,17 @@ img{
     font-family: 'Fira sans' , sans-serif;
     font-weight: 600;
 }
+.book_list{
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fill,minmax(320px, 1fr))
+}
+.list_item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .book_title{
     margin: 0;
     color: #000;
