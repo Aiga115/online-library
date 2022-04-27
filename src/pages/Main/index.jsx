@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { Box, Button, IconButton, Stack } from "@mui/material";
 import { Helmet } from "react-helmet-async";
@@ -32,6 +33,7 @@ const Main = () => {
   const [open, setOpen] = useState(false);
   let dispatch = useDispatch();
   let [category, setCategory] = useState("");
+  let [author, setAuthor] = useState("");
   let bookState = useSelector((store) => {
     return store["books"];
   });
@@ -52,6 +54,9 @@ const Main = () => {
   let handleCategoryChange = (e) => {
     setCategory(e.target.value);
   };
+  let handleAuthorChange = (e) => {
+    setAuthor(e.target.value);
+  };
   let handleFilterByCategory = (value) => {
     dispatch(filterDataByCategory(value));
   };
@@ -60,6 +65,8 @@ const Main = () => {
   };
   let handleFilterAll = () => {
     dispatch(filterAll());
+    setCategory("");
+    setAuthor("");
   };
 
   return (
@@ -92,7 +99,13 @@ const Main = () => {
       <Box sx={{ display: "flex", gap: "20px" }}>
         <FormControl sx={{ minWidth: 250 }}>
           <InputLabel htmlFor="author-list">Authors</InputLabel>
-          <Select defaultValue="" id="author-list" label="Author">
+          <Select
+            defaultValue=""
+            id="author-list"
+            label="Author"
+            value={author}
+            onChange={handleAuthorChange}
+          >
             {authors.map((item, index) => (
               <MenuItem
                 key={index}
@@ -127,17 +140,22 @@ const Main = () => {
       </Box>
       <section>
         <Stack direction="row" spacing={8} style={{ margin: "20px auto" }}>
-          {books.map((item, index) => {
+          {books?.map((item, index) => {
             return (
               <div key={index}>
                 <h1 className="category_header">{item.category_name}</h1>
                 <div>
                   <div className="img_div">
-                    <img
-                      src={`${item.img}`}
-                      alt={item.title}
-                      onClick={handleImgClick}
-                    />
+                    <Link
+                      to="/book-info"
+                      state={{data: item,it: index}}
+                    >
+                      <img
+                        src={`${item.img}`}
+                        alt={item.title}
+                        // onClick={handleImgClick}
+                      />
+                    </Link>
                   </div>
                   {item.isFav ? (
                     <FavoriteIcon

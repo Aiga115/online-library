@@ -1,29 +1,33 @@
-import React, { useState } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
+import { useLocation,useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { Form, FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
 import { Helmet } from "react-helmet-async";
 import "./index.css";
-
+import { updateBook } from "../../redux/features/books.feature";
 import {
   Box,
   Button,
   Container,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
+
 const BookInfo = () => {
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { data } = location.state || {};
+  const { it } = location.state || {};
+
+  let bookState = useSelector((store) => {
+    return store["books"];
+  });
+
+  let { categories } = bookState;
+
   const schema = Yup.object().shape({
     title: Yup.string().required("Must be filled!"),
     author: Yup.string().required("Must be filled!"),
@@ -33,15 +37,18 @@ const BookInfo = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: "",
-      author: "",
-      category: "",
+      id: data.id,
+      img: data.img,
+      title: data.title,
+      author: data.author,
+      category_name: data.category_name,
     },
     validationSchema: schema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
-        resetForm();
-        setSubmitting(false);
+        dispatch(updateBook(values))
+        navigate("/");
+        
       } catch (error) {
         console.error(error);
         setSubmitting(false);
@@ -57,10 +64,7 @@ const BookInfo = () => {
       </Helmet>
       <Box sx={{ display: "flex", justifyContent: "space-around" }}>
         <div className="book_img">
-          <img
-            src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSFlx4x-DSoFn2AEBcxh-pURx2U7ECB4el5OztaFW3igFUXXDUK"
-            alt="book img"
-          />
+          <img src={`${data.img}`} alt="book img" />
         </div>
         <FormikProvider value={formik}>
           <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
@@ -84,18 +88,14 @@ const BookInfo = () => {
                   helperText={touched.author && errors.author}
                 />
               </Stack>
-              <FormControl fullWidth>
-                <InputLabel id="category">Category</InputLabel>
-                <Select
-                  labelId="category"
-                  id="category"
-                  {...getFieldProps("category")}
-                  error={Boolean(touched.category && errors.category)}
-                >
-                  <MenuItem value={10}>Business</MenuItem>
-                  <MenuItem value={20}>Children's Book</MenuItem>
-                </Select>
-              </FormControl>
+              <TextField
+                  label="category_name"
+                  fullWidth
+                  disabled
+                  {...getFieldProps("category_name")}
+                  error={Boolean(touched.category_name && errors.category_name)}
+                  helperText={touched.category_name && errors.category_name}
+                />
             </Stack>
             <Container
               sx={{

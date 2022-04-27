@@ -1,0 +1,8 @@
+.uploadArea {
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    height: 240px;
+    background: #F9F9F9;
+    border-radius: 8px;
+}
