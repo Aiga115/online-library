@@ -145,7 +145,7 @@ const Main = () => {
       </Box>
       <section>
         <div className="book_list">
-          {books?.map((item, index) => {
+          {books.length!==0?books.map((item, index) => {
             return (
               <div key={index} className="list_item">
                 <h1 className="category_header">{item.category_name}</h1>
@@ -182,7 +182,7 @@ const Main = () => {
                 </div>
               </div>
             );
-          })}
+          }):<h1>There are no books added (Add Please)</h1>}
         </div>
       </section>
     </div>
