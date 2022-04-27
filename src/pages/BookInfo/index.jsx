@@ -22,22 +22,15 @@ const BookInfo = () => {
   const { data } = location.state || {};
   const { it } = location.state || {};
 
-  let bookState = useSelector((store) => {
-    return store["books"];
-  });
-
-  let { categories } = bookState;
-
   const schema = Yup.object().shape({
     title: Yup.string().required("Must be filled!"),
     author: Yup.string().required("Must be filled!"),
-    category: Yup.string().required("Must be filled!"),
+    category_name: Yup.string().required("Must be filled!"),
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      id: data.id,
       img: data.img,
       title: data.title,
       author: data.author,
@@ -46,9 +39,10 @@ const BookInfo = () => {
     validationSchema: schema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
-        dispatch(updateBook(values))
+        dispatch(updateBook({values,it}))
         navigate("/");
-        
+        resetForm();
+        setSubmitting(false);
       } catch (error) {
         console.error(error);
         setSubmitting(false);
@@ -111,13 +105,15 @@ const BookInfo = () => {
                   backgroundColor: "#E7E4E4",
                   color: "#000000",
                   marginRight: "10px",
+                  textTransform: "none",
                 }}
               >
                 Reset
               </Button>
               <Button
-                type={"submit"}
-                sx={{ backgroundColor: "#FF8925", color: "#000000" }}
+                 type={"submit"}
+                 variant="contained"
+                 sx={{ color: "#FFF", textTransform: "none" }}
               >
                 Save Changes
               </Button>

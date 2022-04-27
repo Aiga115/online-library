@@ -14,10 +14,10 @@ let storeData = async () => {
       "categories",
       JSON.stringify(CategoryService.getAllCategories())
     );
-    await AsyncLocalStorage.setItem(
-      "authors",
-      JSON.stringify(AuthorService.getAllAuthors())
-    );
+    // await AsyncLocalStorage.setItem(
+    //   "authors",
+    //   JSON.stringify(AuthorService.getAllAuthors())
+    // );
   } catch (e) {
     //error
   }
@@ -81,25 +81,43 @@ const bookSlice = createSlice({
       localStorage.setItem("books",JSON.stringify(books))
       state.authors = JSON.parse(localStorage.getItem("authors")) || [];
       state.books =JSON.parse(localStorage.getItem("books")) || [];
+      state.allBooks =JSON.parse(localStorage.getItem("books")) || [];
     },
     deleteBook:function (state,action){
       let books = JSON.parse(localStorage.getItem("books"));
-      let deleted = books.filter((item)=>item.id!=action.payload);
+      let authors = JSON.parse(localStorage.getItem("authors"));
+      let deleted = books.filter((item,index)=>index!=action.payload);
+      let deletedAuthors = authors.filter((item,index)=>index!=action.payload);
       localStorage.setItem("books",JSON.stringify(deleted));
+      localStorage.setItem("authors",JSON.stringify(deletedAuthors));
       state.books = JSON.parse(localStorage.getItem("books")) || [];
+      state.authors = JSON.parse(localStorage.getItem("authors")) || [];
     },
     updateBook: function (state,action){
+      console.log("update book: ",action.payload)
+      
       let books = JSON.parse(localStorage.getItem("books"));
+      let authors = JSON.parse(localStorage.getItem("authors"));
       let updated = books.map((item,index)=>{
-        if(item.id === action.payload.id){
-          item.title = action.payload.title
-          item.author = action.payload.author
-          item.category_name = action.payload.category_name
+        if(index === action.payload.it){
+          item.title = action.payload.values.title
+          item.author = action.payload.values.author
+          item.category_name = action.payload.values.category_name
         }
-        return item 
+        return item;
       })
+      let updatedAuthor = authors.map((item,index)=>{
+        if(index===action.payload.it){
+          item.name = action.payload.values.author
+        }
+        return item;
+      })
+
+      console.log("Updated: ",updated);
       localStorage.setItem("books",JSON.stringify(updated));
+      localStorage.setItem("authors",JSON.stringify(updatedAuthor));
       state.books = JSON.parse(localStorage.getItem("books")) || [];
+      state.authors = JSON.parse(localStorage.getItem("authors")) || [];
     }
   },
 });

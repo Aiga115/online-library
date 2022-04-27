@@ -13,6 +13,7 @@ import {
   filterDataByCategory,
   filterDataByAuthor,
   filterAll,
+  deleteBook
 } from "../../redux/features/books.feature";
 
 import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
@@ -20,12 +21,13 @@ import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import ListSubheader from "@mui/material/ListSubheader";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+
 import BookAddModal from "../../components/bookAddModal";
 
 const Main = () => {
@@ -68,6 +70,9 @@ const Main = () => {
     setCategory("");
     setAuthor("");
   };
+  let handleDelete = (index) => {
+    dispatch(deleteBook(index));
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "50px" }}>
@@ -146,28 +151,30 @@ const Main = () => {
                 <h1 className="category_header">{item.category_name}</h1>
                 <div>
                   <div className="img_div">
-                    <Link
-                      to="/book-info"
-                      state={{data: item,it: index}}
-                    >
-                      <img
-                        src={`${item.img}`}
-                        alt={item.title}
-                        // onClick={handleImgClick}
-                      />
+                    <Link to="/book-info" state={{ data: item, it: index }}>
+                      <img src={`${item.img}`} alt={item.title} />
                     </Link>
                   </div>
-                  {item.isFav ? (
-                    <FavoriteIcon
-                      sx={{ color: "red", m: "5px 0 5px 0" }}
-                      onClick={() => handleFav(item.id)}
-                    />
-                  ) : (
-                    <FavoriteBorderIcon
-                      sx={{ color: "red", m: "5px 0 5px 0" }}
-                      onClick={() => handleFav(item.id)}
-                    />
-                  )}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "70px",
+                    }}
+                  >
+                    {item.isFav ? (
+                      <FavoriteIcon
+                        sx={{ color: "red", m: "5px 0 5px 0" }}
+                        onClick={() => handleFav(item.id)}
+                      />
+                    ) : (
+                      <FavoriteBorderIcon
+                        sx={{ color: "red", m: "5px 0 5px 0" }}
+                        onClick={() => handleFav(item.id)}
+                      />
+                    )}
+                    <DeleteIcon onClick={() =>handleDelete(index)}/>
+                  </div>
                   <div>
                     <p className="book_title">{item.title}</p>
                     <p className="book_author">{item.author}</p>
